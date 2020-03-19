@@ -53,7 +53,7 @@ Users will have the ability to archive an Animal's entry on this page.
 Users will also have the ability to set reminders (one-time or periodic) for an animal on this page. (e.g. feed this animal every Tu/Th/Su).
 
 Upon adding any of this information, a user will have to option to select whether the it corresponds to the current day or a day in the past.
-![Animal page network](/pages/Animal_page_network.jpg)
+![Animal page network](/pages/Animal_page_network.png)
 ##### __Users can view an animal's full set of pictures/weights/logged info by tapping on the respective field. These will lead to the 'Picture,' 'Weights,' and 'Datalog' pages, respectively.__
 ### Create Reminder page
 This page will allow a user to enter in information for a reminder for an animal. Upon creating the reminder, the user is redirected to the respective animal's page.
