@@ -11,6 +11,7 @@ The main page will have the following features
 
 ### Search Results page
 The search results page will display a list of animals that correspond to the query given by the user. An element of the list will be composed of the most recent picture of the animal, and its pet name and common name. A user can then navigate to a result's respective __Animal__ page by tapping anywhere on the result.
+![Search Result page network](/pages/Search_result_page_network.png)
 
 ### Add Animal page
 The Add Animal page will allow a user to enter the following information:
