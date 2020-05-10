@@ -14,6 +14,7 @@ public abstract class Wrapper {
      * The unique identifier for a Wrapper and its corresponding resource.
      */
     final private long UID;
+
     /**
      * The value of the prevID for Wrappers at the start of a list.
      */
