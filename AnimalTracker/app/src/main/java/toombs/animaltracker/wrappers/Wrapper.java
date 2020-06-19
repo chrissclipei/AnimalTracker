@@ -1,5 +1,7 @@
 package toombs.animaltracker.Wrappers;
 
+import java.io.Serializable;
+
 /**
  * @author Tim Toombs
  * @version  0.1
@@ -9,7 +11,7 @@ package toombs.animaltracker.Wrappers;
  * large to load in their entirety. The Wrapper will create a linked list of individual serialized
  * resources.
  */
-public abstract class Wrapper {
+public abstract class Wrapper implements Serializable {
     /**
      * The unique identifier for a Wrapper and its corresponding resource.
      */
@@ -18,17 +20,21 @@ public abstract class Wrapper {
     /**
      * The value of the prevID for Wrappers at the start of a list.
      */
-    static final public long WRAPPER_SENTINEL = -2;
+    static final public long WRAPPER_START_SENTINEL = -2;
 
     /**
+     * The value of the nextID for Wrappers at the end of a list.
+     */
+    static final public long WRAPPER_END_SENTINEL = -1;
+    /**
      * The unique identifier for the Wrapper that occurs earlier in the linked list. This value
-     * defaults to WRAPPER_SENTINEL when the current Wrapper is the first element in the linked list.
+     * defaults to WRAPPER_START_SENTINEL when the current Wrapper is the first element in the linked list.
      */
     private long prevID;
 
     /**
      * The unique identifier for the Wrapper that occurs later in the linked list. This value
-     * defaults to -1 when the current Wrapper is the last element in the linked list.
+     * defaults to WRAPPER_END_SENTINEL when the current Wrapper is the last element in the linked list.
      */
     private long nextID;
 
