@@ -1,16 +1,20 @@
 package toombs.animaltracker.wrappers;
 
 import android.content.Context;
+import android.provider.Contacts;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 
 import toombs.animaltracker.Wrappers.Wrapper;
 
@@ -30,35 +34,70 @@ public class WrapperUtil {
     }
 
     //TODO implement
-    static LogInfoWrapper initializeLogInfoLinkedList(Context context,String pathName) {
+    static LogInfoWrapper initializeLogInfoLinkedList(Context context, String pathName) {
         //CHECK PATHNAME MAKE SURE IT ENDS WITH LOGS
-
+        if (!checkLogPath(pathName));
         // If already initalized in path, return current start Sentinel.
-
+//        File file = context.getFileStreamPath(pathName + "/-2");
+//        if (file.exists())
+//            return loadLogInfoWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL);
+        if (loadLogInfoWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL) != null)
+            return loadLogInfoWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL);
         //Initialize start node, Initialize EndNode
         //Connect the two
+        LogInfoWrapper startSentinel = new LogInfoWrapper(Wrapper.WRAPPER_START_SENTINEL,
+                Wrapper.WRAPPER_START_SENTINEL, Wrapper.WRAPPER_END_SENTINEL, null);
+        LogInfoWrapper endSentinel = new LogInfoWrapper(Wrapper.WRAPPER_END_SENTINEL,
+                Wrapper.WRAPPER_START_SENTINEL, Wrapper.WRAPPER_END_SENTINEL, null);
         //Serialize both
+        serializeWrapper(context, pathName, startSentinel);
+        serializeWrapper(context, pathName, endSentinel);
         //Return start Node.
+        return startSentinel;
     }
     //TODO implement
     static PictureWrapper initializePicInfoLinkedList(Context context,String pathName) {
         //CHECK PATHNAME MAKE SURE IT ENDS WITH PICS
+        if (!checkPicPath(pathName));
         // If already initalized in path, return current start Sentinel.
-
+//        File file = context.getFileStreamPath(pathName + "/-2");
+//        if (file.exists())
+//            return loadPictureWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL);
+        if (loadPictureWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL) != null)
+            return loadPictureWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL);
         //Initialize start node, Initialize EndNode
         //Connect the two
+        PictureWrapper startSentinel = new PictureWrapper(Wrapper.WRAPPER_START_SENTINEL,
+                Wrapper.WRAPPER_START_SENTINEL, Wrapper.WRAPPER_END_SENTINEL, null);
+        PictureWrapper endSentinel = new PictureWrapper(Wrapper.WRAPPER_END_SENTINEL,
+                Wrapper.WRAPPER_START_SENTINEL, Wrapper.WRAPPER_END_SENTINEL, null);
         //Serialize both
+        serializeWrapper(context, pathName, startSentinel);
+        serializeWrapper(context, pathName, endSentinel);
         //Return start Node.
+        return startSentinel;
     }
     //TODO implement
     static WeightWrapper initializeWeightInfoLinkedList(Context context,String pathName) {
         //CHECK PATHNAME MAKE SURE IT ENDS WITH WEIGHTS
+        if (!checkWeightPath(pathName));
         // If already initalized in path, return current start Sentinel.
-
+//        File file = context.getFileStreamPath(pathName + "/-2");
+//        if (file.exists())
+//            return loadWeightWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL);
+        if (loadWeightWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL) != null)
+            return loadWeightWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL);
         //Initialize start node, Initialize EndNode
         //Connect the two
+        WeightWrapper startSentinel = new WeightWrapper(Wrapper.WRAPPER_START_SENTINEL,
+                Wrapper.WRAPPER_START_SENTINEL, Wrapper.WRAPPER_END_SENTINEL, null);
+        WeightWrapper endSentinel = new WeightWrapper(Wrapper.WRAPPER_END_SENTINEL,
+                Wrapper.WRAPPER_START_SENTINEL, Wrapper.WRAPPER_END_SENTINEL, null);
         //Serialize both
+        serializeWrapper(context, pathName, startSentinel);
+        serializeWrapper(context, pathName, endSentinel);
         //Return start Node.
+        return startSentinel;
     }
 
 
@@ -82,7 +121,8 @@ public class WrapperUtil {
         if (!checkWeightPath(pathName)){
             return;
         }
-        //TODO write about initialize ahaving to be called first :))))
+        if (loadWeightWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL) == null)
+            initializeWeightInfoLinkedList(context, pathName);
         insertGeneric(context,pathName,wrapper);
 
 
@@ -92,7 +132,8 @@ public class WrapperUtil {
         if (!checkLogPath(pathName)){
             return;
         }
-        //TODO write about initialize ahaving to be called first :))))
+        if (loadLogInfoWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL) == null)
+            initializeLogInfoLinkedList(context, pathName);
         insertGeneric(context,pathName,wrapper);
 
 
@@ -102,38 +143,54 @@ public class WrapperUtil {
         if (!checkPicPath(pathName)){
             return;
         }
-        //TODO write about initialize ahaving to be called first :))))
+        if (loadPictureWrapper(context, pathName, Wrapper.WRAPPER_START_SENTINEL) == null)
+            initializePicInfoLinkedList(context, pathName);
         insertGeneric(context,pathName,wrapper);
     }
 
     //TODO implement
     static  void removeWeightInfo(Context context,String pathName, int UID) {
         //CHECK PATHNAME MAKE SURE IT ENDS WITH WEIGHTS
-        //LOAD UID NODE
-        // LOAD UID PREV NODE
-        // LOAD UID NEXT NODE
-        // RESET NODES
-        // REMOVE UID NODE FROM FILESYSTEM
+        if (checkWeightPath(pathName)) {
+            Wrapper currNode = loadWeightWrapper(context, pathName, UID);
+            Wrapper prevNode = loadWeightWrapper(context, pathName, currNode.getPrevID());
+            Wrapper nextNode = loadWeightWrapper(context, pathName, currNode.getNextID());
+
+            prevNode.setNextID(nextNode.getUID());
+            nextNode.setPrevID(prevNode.getUID());
+
+            context.deleteFile(pathName + UID);
+        }
     }
 
     //TODO implement
     static void removePicInfo(Context context,String pathName, int UID) {
         //CHECK PATHNAME MAKE SURE IT ENDS WITH PICS
-        //LOAD UID NODE
-        //LOAD UID PREV NODE
-        //LOAD UID NEXT NODE
-        // RESET NODES
-        //REMOVE UID NODE FORM FILESYSTEM
+        if (checkPicPath(pathName)) {
+            Wrapper currNode = loadPictureWrapper(context, pathName, UID);
+            Wrapper prevNode = loadPictureWrapper(context, pathName, currNode.getPrevID());
+            Wrapper nextNode = loadPictureWrapper(context, pathName, currNode.getNextID());
+
+            prevNode.setNextID(nextNode.getUID());
+            nextNode.setPrevID(prevNode.getUID());
+
+            context.deleteFile(pathName + UID);
+        }
     }
 
     //TODO implement
     static void removeLogInfo(Context context,String pathName, int UID) {
         //CHECK PATHNAME MAKE SURE IT ENDS WITH LOGS
-        //LOAD UID NODE
-        // LOAD UID PREV NODE
-        // LOAD UID NEXT NODE
-        // RESET NODES
-        // REMOVE UID NODE FROM FILESYSTEM
+        if (checkLogPath(pathName)) {
+            Wrapper currNode = loadLogInfoWrapper(context, pathName, UID);
+            Wrapper prevNode = loadPictureWrapper(context, pathName, currNode.getPrevID());
+            Wrapper nextNode = loadPictureWrapper(context, pathName, currNode.getNextID());
+
+            prevNode.setNextID(nextNode.getUID());
+            nextNode.setPrevID(prevNode.getUID());
+
+            context.deleteFile(pathName + UID);
+        }
     }
 
     static String getDirName(String pathName) {
